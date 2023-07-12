@@ -1,6 +1,9 @@
 window.onload = function() {
   document.querySelectorAll('.lastAyah')[0].remove();
   document.querySelectorAll('.lastAyah')[1].remove();
+  if (localStorage.allZikrs === undefined){
+    localStorage.allZikrs = document.querySelector('.container').innerHTML;
+  }
 }
 //Solve Last 2 Ayahs of Baqarah Problem
 
@@ -102,9 +105,9 @@ zikrs.forEach(el => {
 if (window.localStorage.allZikrs) {
   document.querySelector('.container').innerHTML = window.localStorage.allZikrs;
 }
-else {
-  window.localStorage.allZikrs = document.querySelector('.container').innerHTML
-}
+// else {
+//   window.localStorage.allZikrs = document.querySelector('.container').innerHTML
+// }
 
 //Adding New Zikr
 
@@ -167,7 +170,7 @@ document.querySelector('[type="submit"]').addEventListener('click', function () 
   window.localStorage.allZikrs += zikr.innerHTML;
   countforAdded();
   removeZikr();
-  changeZikrText();
+  // changeZikrText();
 }
 )
 
@@ -198,14 +201,14 @@ function countZikrs() {
   allZikrs.forEach(el => {
   
     el.addEventListener('click', (e) => {
-      if (el.children[1].children[2].innerHTML == 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target) && el !== Array.from(document.querySelectorAll('.added')[Array.from(document.querySelectorAll('.added')).length - 1])) {
+      if (el.children[1].children[2].innerHTML == 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target)) {
         el.children[1].children[2].innerHTML = 0;
         el.style.opacity = 0;
         setTimeout(() => {
           el.style.display = 'none'
         }, 500);
       }
-      else if (el.children[1].children[2].innerHTML != 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target)) {
+      else if (el.children[1].children[2].innerHTML != 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target) ) {
         el.children[1].children[2].innerHTML = parseInt(el.children[1].children[2].innerHTML) - 1
         console.log(el.children[1].children[2].innerHTML = parseInt(el.children[1].children[2].innerHTML))
 
@@ -239,10 +242,16 @@ function areYouSure2() {
       setTimeout(() => {
         result.parentElement.parentElement.style.zIndex = -1;
         oldInner = document.querySelector('.container').innerHTML;
-        oldInner = oldInner.replace('<div class="allCard" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
         oldInner = oldInner.replace('<div class="allCard added" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
+        oldInner = oldInner.replace('<div class="allCard" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
+        oldInner = oldInner.replace('<div class="allCard lastAyah" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
+        console.log(oldInner)
+        // oldInner = oldInner.replace('<div class="allCard added" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
         document.querySelector('.container').innerHTML = localStorage.allZikrs
-        localStorage.allZikrs = localStorage.allZikrs.replace( `<div class="allCard added">${result.parentElement.parentElement.innerHTML}</div>`,'');
+        localStorage.allZikrs = localStorage.allZikrs.replaceAll( `<div class="allCard added">${result.parentElement.parentElement.innerHTML}</div>`,'');
+        localStorage.allZikrs = localStorage.allZikrs.replaceAll( `<div class="allCard">${result.parentElement.parentElement.innerHTML}</div>`,'');
+        localStorage.allZikrs = localStorage.allZikrs.replaceAll( `<div class="allCard lastAyah">${result.parentElement.parentElement.innerHTML}</div>`,'');
+        console.log(localStorage.allZikrs)
         document.querySelector('.container').innerHTML = oldInner;
         removeZikr();
         areYouSure2();
