@@ -1,8 +1,9 @@
-//Solve Last 2 Ayahs of Baqarah Problem
-
 window.onload = function() {
   document.querySelectorAll('.lastAyah')[0].remove();
+  document.querySelectorAll('.lastAyah')[1].remove();
 }
+//Solve Last 2 Ayahs of Baqarah Problem
+
 
 let date = new Date();
 let morningHours = [4,5,6,7,8,9,10,11,12,13,14,15]
@@ -146,9 +147,9 @@ document.addEventListener('click', function (e) {
 //Add New Zikr
 document.querySelector('[type="submit"]').addEventListener('click', function () {
   let zikr = document.createElement('div');
-  zikr.className = 'allCard';
+  zikr.className = 'allCard added';
   zikr.innerHTML = `  
-  <div class='allCard'>
+  <div class='allCard added'>
   <div class="zikr text-white p-5 bg-slate-600 w-60 rounded-t-lg text-center">
   <div class="removeZikr rounded-md">X</div>
   <p>${document.querySelector('[type="text"]').value}</p>
@@ -164,18 +165,40 @@ document.querySelector('[type="submit"]').addEventListener('click', function () 
   overlayLayer.style.zIndex = -1;
   addZikrPage.classList.remove('showAdd');
   window.localStorage.allZikrs += zikr.innerHTML;
-  countZikrs();
+  countforAdded();
   removeZikr();
   changeZikrText();
 }
 )
+
+function countforAdded() {
+  document.addEventListener('click' , function(e) {
+if (e.target === Array.from(document.querySelectorAll('.added .zikr p'))[Array.from(document.querySelectorAll('.added .zikr p')).length - 1] || e.target === Array.from(document.querySelectorAll('.added .zikr'))[Array.from(document.querySelectorAll('.added .zikr')).length - 1] ){
+      let ourElement = Array.from(document.querySelectorAll('.added .circle'))[Array.from(document.querySelectorAll('.added .circle')).length - 1]
+      if (ourElement.innerHTML == 1) {
+        ourElement.innerHTML = 0;
+        ourElement.parentElement.parentElement.style.opacity = 0;
+        setTimeout(() => {
+          ourElement.parentElement.parentElement.remove();
+
+        }, 500);
+      }
+      else if (ourElement.innerHTML != 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target)) {
+        ourElement.innerHTML = parseInt(ourElement.innerHTML) - 1
+      }
+      }
+    
+  }
+    )
+}
 //Count Down Zikrs
 
 function countZikrs() {
   let allZikrs = document.querySelectorAll('.allCard');
   allZikrs.forEach(el => {
+  
     el.addEventListener('click', (e) => {
-      if (el.children[1].children[2].innerHTML == 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target)) {
+      if (el.children[1].children[2].innerHTML == 1 && !Array.from(document.querySelectorAll('.removeZikr')).includes(e.target) && el !== Array.from(document.querySelectorAll('.added')[Array.from(document.querySelectorAll('.added')).length - 1])) {
         el.children[1].children[2].innerHTML = 0;
         el.style.opacity = 0;
         setTimeout(() => {
@@ -217,8 +240,9 @@ function areYouSure2() {
         result.parentElement.parentElement.style.zIndex = -1;
         oldInner = document.querySelector('.container').innerHTML;
         oldInner = oldInner.replace('<div class="allCard" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
+        oldInner = oldInner.replace('<div class="allCard added" style="opacity: 0; z-index: -1;">' + result.parentElement.parentElement.innerHTML +'</div>' ,'');
         document.querySelector('.container').innerHTML = localStorage.allZikrs
-        localStorage.allZikrs = localStorage.allZikrs.replace( `<div class="allCard">${result.parentElement.parentElement.innerHTML}</div>`,'');
+        localStorage.allZikrs = localStorage.allZikrs.replace( `<div class="allCard added">${result.parentElement.parentElement.innerHTML}</div>`,'');
         document.querySelector('.container').innerHTML = oldInner;
         removeZikr();
         areYouSure2();
